@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>password checker</title>
+</head>
+
+<body>
+
+    <h1>password checker</h1>
+
+    <input type="text" id="pw" placeholder="enter password">
+    <button onclick="checkPassword()">check</button>
+
+    <p id="result"></p>
+    <p id="details"></p>
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("pw").value;
+
+            fetch("/check", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    password: password
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                var result = document.getElementById("result");
+                var details = document.getElementById("details");
+
+                result.textContent = "Result: " + data.result;
+
+                details.innerHTML =
+                    "8+ characters: " + (data.long_enough ? "yes" : "no") + "<br>" +
+                    "uppercase letter: " + (data.upper ? "yes" : "no") + "<br>" +
+                    "lowercase letter: " + (data.lower ? "yes" : "no") + "<br>" +
+                    "number: " + (data.number ? "yes" : "no") + "<br>" +
+                    "special character: " + (data.special ? "yes" : "no") + "<br>" +
+                    "common password: " + (data.common ? "yes" : "no");
+            });
+        }
+    </script>
+
+</body>
+</html>
